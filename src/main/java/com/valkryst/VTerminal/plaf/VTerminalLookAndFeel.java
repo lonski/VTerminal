@@ -30,7 +30,11 @@ public class VTerminalLookAndFeel extends BasicLookAndFeel {
 	 * @throws FontFormatException If there is an error with the font file.
 	 */
 	private VTerminalLookAndFeel(final @NonNull InputStream fontInputStream, final int pointSize) throws IOException, FontFormatException {
-		vFont = new VFont(fontInputStream, pointSize);
+		this(new VFont(fontInputStream, pointSize));
+	}
+
+	private VTerminalLookAndFeel(VFont vFont) {
+		this.vFont = vFont;
 	}
 
 	@Override
@@ -186,6 +190,25 @@ public class VTerminalLookAndFeel extends BasicLookAndFeel {
 		return instance;
 	}
 
+	public static VTerminalLookAndFeel getInstance(VFont vFont) throws IOException, FontFormatException {
+		if (instance != null) {
+			System.err.println("The VTerminalLookAndFeel has already been initialized with a font. The specified font will not be applied.");
+			return instance;
+		} else {
+			try {
+				Palette.loadAndRegisterProperties(
+						Objects.requireNonNull(
+								VTerminalLookAndFeel.class.getResourceAsStream("/Palettes/Dracula.properties")
+						)
+				);
+			} catch (final IOException ignored) {}
+		}
+
+
+		instance = new VTerminalLookAndFeel(vFont);
+		return instance;
+	}
+
 	@Override
 	public String getName() {
 		return "VTerminal Look & Feel";
@@ -225,7 +248,7 @@ public class VTerminalLookAndFeel extends BasicLookAndFeel {
 		if (desktopHints != null) {
 			graphics2D.setRenderingHints(desktopHints);
 		}
-		
+
 		graphics2D.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		graphics2D.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
