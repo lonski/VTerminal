@@ -18,12 +18,12 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class VFont {
-	@Getter private final Font font;
-	private final Cache<Integer, Image> imageCache;
+	@Getter protected final Font font;
+	protected final Cache<Integer, Image> imageCache;
 
-	@Getter private final int maxTileWidth;
-	@Getter private final int maxTileHeight;
-	private final int fontAscent;
+	@Getter protected final int maxTileWidth;
+	@Getter protected final int maxTileHeight;
+	protected final int fontAscent;
 
 	public VFont(final @NonNull InputStream inputStream, final int pointSize) throws IOException, FontFormatException {
 		font = Font.createFont(Font.TRUETYPE_FONT, inputStream)
@@ -136,7 +136,7 @@ public class VFont {
 		return image;
 	}
 
-	private void applyRenderingHints(Graphics2D graphics, final int codePoint) {
+	protected void applyRenderingHints(Graphics2D graphics, final int codePoint) {
 		graphics = VTerminalLookAndFeel.setRenderingHints(graphics);
 
 		if (isGraphicCharacter(codePoint)) {
@@ -144,7 +144,7 @@ public class VFont {
 		}
 	}
 
-	private boolean isGraphicCharacter(final int codePoint) {
+	protected boolean isGraphicCharacter(final int codePoint) {
 		final var unicodeBlock = Character.UnicodeBlock.of(codePoint);
 		return (unicodeBlock == Character.UnicodeBlock.BOX_DRAWING) ||
 				(unicodeBlock == Character.UnicodeBlock.BLOCK_ELEMENTS) ||
@@ -152,7 +152,7 @@ public class VFont {
 				(unicodeBlock == Character.UnicodeBlock.GEOMETRIC_SHAPES_EXTENDED);
 	}
 
-	private FontMetrics getFontMetrics() {
+	protected FontMetrics getFontMetrics() {
 		final var image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		final var graphics = image.createGraphics();
 		applyRenderingHints(graphics, 0);
